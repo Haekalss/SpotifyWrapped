@@ -93,18 +93,18 @@ class SpotifyWrapped {
         ];
         for (const path of needsToken) {
             if (endpoint.startsWith(path)) {
-                const hasQuery = endpoint.includes('?');
-                url = `${API_BASE_URL}${path}${hasQuery ? '&' : '?'}access_token=${this.accessToken}`;
-                // Untuk /spotify/wrapped tambahkan refresh_token juga
+                // Pisahkan path dan query
+                let [base, queryString] = endpoint.split('?');
+                let params = new URLSearchParams(queryString || '');
+                params.set('access_token', this.accessToken);
                 if (path === '/spotify/wrapped') {
-                    url += `&refresh_token=${this.refreshToken}`;
+                    params.set('refresh_token', this.refreshToken);
                 }
+                url = `${API_BASE_URL}${base}?${params.toString()}`;
                 break;
             }
         }
-        const response = await fetch(url, {
-            // headers: { 'Authorization': `Bearer ${this.accessToken}` } // tidak perlu untuk backend ini
-        });
+        const response = await fetch(url);
 
         if (!response.ok) {
             if (response.status === 401) {
