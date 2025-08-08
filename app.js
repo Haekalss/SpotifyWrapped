@@ -266,20 +266,21 @@ class SpotifyWrapped {
     renderTopTracks(tracks) {
         const container = document.getElementById('topTracks');
         container.innerHTML = '';
-
+        if (!tracks || tracks.length === 0) {
+            container.innerHTML = '<p class="text-gray-400">No tracks found.</p>';
+            return;
+        }
         tracks.slice(0, 5).forEach((track, index) => {
             const trackElement = document.createElement('div');
             trackElement.className = 'track-item fade-in';
             trackElement.style.animationDelay = `${index * 0.1}s`;
-            
             trackElement.innerHTML = `
                 <div class="track-number">${index + 1}</div>
                 <div class="track-info">
-                    <div class="track-name">${track.name}</div>
-                    <div class="track-artist">${track.artists.join(', ')}</div>
+                    <div class="track-name">${track.name || '-'}</div>
+                    <div class="track-artist">${track.artists ? track.artists.map(a => a.name || a).join(', ') : '-'}</div>
                 </div>
             `;
-            
             container.appendChild(trackElement);
         });
     }
@@ -287,18 +288,19 @@ class SpotifyWrapped {
     renderTopArtists(artists) {
         const container = document.getElementById('topArtists');
         container.innerHTML = '';
-
+        if (!artists || artists.length === 0) {
+            container.innerHTML = '<p class="text-gray-400">No artists found.</p>';
+            return;
+        }
         artists.slice(0, 5).forEach((artist, index) => {
             const artistElement = document.createElement('div');
             artistElement.className = 'artist-card fade-in';
             artistElement.style.animationDelay = `${index * 0.1}s`;
-            
             artistElement.innerHTML = `
                 <div class="artist-image"></div>
-                <div class="artist-name font-bold">${artist.name}</div>
-                <div class="text-sm text-gray-400">${artist.genres.join(', ')}</div>
+                <div class="artist-name font-bold">${artist.name || '-'}</div>
+                <div class="text-sm text-gray-400">${artist.genres ? artist.genres.join(', ') : '-'}</div>
             `;
-            
             container.appendChild(artistElement);
         });
     }
@@ -306,13 +308,21 @@ class SpotifyWrapped {
     renderTopGenres(genres) {
         const container = document.getElementById('topGenres');
         container.innerHTML = '';
-
+        if (!genres || genres.length === 0) {
+            container.innerHTML = '<p class="text-gray-400">No genres found.</p>';
+            return;
+        }
         genres.slice(0, 10).forEach((genre, index) => {
             const genreElement = document.createElement('span');
             genreElement.className = 'genre-pill fade-in';
             genreElement.style.animationDelay = `${index * 0.05}s`;
-            genreElement.textContent = genre;
-            
+            if (typeof genre === 'string') {
+                genreElement.textContent = genre;
+            } else if (genre.genre) {
+                genreElement.textContent = `${genre.genre} (${genre.count})`;
+            } else {
+                genreElement.textContent = JSON.stringify(genre);
+            }
             container.appendChild(genreElement);
         });
     }
