@@ -1,6 +1,6 @@
 // Spotify Wrapped Frontend JavaScript
 
-const API_BASE_URL = 'http://localhost:8080'; // Adjust this to your backend URL
+const API_BASE_URL = 'https://wrappedspotify-production.up.railway.app'; // Adjust this to your backend URL
 
 class SpotifyWrapped {
     constructor() {
