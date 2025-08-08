@@ -61,14 +61,23 @@ class SpotifyWrapped {
         document.getElementById('dashboard')?.classList.add('hidden');
         document.getElementById('loginBtn')?.classList.remove('hidden');
         document.getElementById('logoutBtn')?.classList.add('hidden');
+        this.hideLoading(); // pastikan spinner hilang di hero
     }
 
     showLoading() {
-        document.getElementById('loadingSpinner')?.classList.remove('hidden');
+        const spinner = document.getElementById('loadingSpinner');
+        if (spinner) {
+            spinner.classList.remove('hidden');
+            spinner.style.display = 'flex';
+        }
     }
 
     hideLoading() {
-        document.getElementById('loadingSpinner')?.classList.add('hidden');
+        const spinner = document.getElementById('loadingSpinner');
+        if (spinner) {
+            spinner.classList.add('hidden');
+            spinner.style.display = 'none';
+        }
     }
 
     async loadAllData() {
@@ -354,6 +363,12 @@ function handleOAuthCallback() {
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
+    // Pastikan spinner selalu hilang saat awal load
+    const spinner = document.getElementById('loadingSpinner');
+    if (spinner) {
+        spinner.classList.add('hidden');
+        spinner.style.display = 'none';
+    }
     handleOAuthCallback();
     const app = new SpotifyWrapped();
     const chartTypeSelect = document.getElementById('chartTypeSelect');
