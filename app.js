@@ -83,10 +83,27 @@ class SpotifyWrapped {
     }
 
     async apiRequest(endpoint) {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-            headers: {
-                'Authorization': `Bearer ${this.accessToken}`
+        // Tambahkan access_token ke query string jika endpoint membutuhkan
+        let url = `${API_BASE_URL}${endpoint}`;
+        const needsToken = [
+            '/spotify/top-tracks',
+            '/spotify/top-artists',
+            '/spotify/top-genres',
+            '/spotify/wrapped'
+        ];
+        for (const path of needsToken) {
+            if (endpoint.startsWith(path)) {
+                const hasQuery = endpoint.includes('?');
+                url = `${API_BASE_URL}${path}${hasQuery ? '&' : '?'}access_token=${this.accessToken}`;
+                // Untuk /spotify/wrapped tambahkan refresh_token juga
+                if (path === '/spotify/wrapped') {
+                    url += `&refresh_token=${this.refreshToken}`;
+                }
+                break;
             }
+        }
+        const response = await fetch(url, {
+            // headers: { 'Authorization': `Bearer ${this.accessToken}` } // tidak perlu untuk backend ini
         });
 
         if (!response.ok) {
