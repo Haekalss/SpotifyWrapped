@@ -1,11 +1,12 @@
 // Spotify Wrapped Frontend JavaScript
 
-const API_BASE_URL = 'https://wrappedspotify-production.up.railway.app'; // Adjust this to your backend URL
+const API_BASE_URL = 'https://wrappedspotify-production.up.railway.app'; // Adjust to your backend URL
 
 class SpotifyWrapped {
     genreData = [];
     artistData = [];
     trackData = [];
+
     constructor() {
         this.accessToken = localStorage.getItem('accessToken');
         this.refreshToken = localStorage.getItem('refreshToken');
@@ -14,24 +15,23 @@ class SpotifyWrapped {
 
     init() {
         this.bindEvents();
+        this.hideLoading(); // pastikan spinner mati saat pertama load
         this.checkAuthStatus();
     }
 
     bindEvents() {
-        document.getElementById('loginBtn').addEventListener('click', () => this.login());
-        document.getElementById('logoutBtn').addEventListener('click', () => this.logout());
-        document.getElementById('getStartedBtn').addEventListener('click', () => this.login());
+        document.getElementById('loginBtn')?.addEventListener('click', () => this.login());
+        document.getElementById('logoutBtn')?.addEventListener('click', () => this.logout());
+        document.getElementById('getStartedBtn')?.addEventListener('click', () => this.login());
     }
 
     checkAuthStatus() {
         if (this.accessToken) {
             this.showDashboard();
             this.loadAllData();
-            this.showPieChart(); // langsung tampilkan pie chart setelah login
+            this.showPieChart();
         } else {
             this.showHero();
-            this.hideLoading();
-            // Ensure loading spinner is hidden if no token
             this.hideLoading();
         }
     }
@@ -46,31 +46,34 @@ class SpotifyWrapped {
         this.accessToken = null;
         this.refreshToken = null;
         this.showHero();
+        this.hideLoading();
     }
 
     showDashboard() {
-        document.getElementById('hero').classList.add('hidden');
-        document.getElementById('dashboard').classList.remove('hidden');
-        document.getElementById('loginBtn').classList.add('hidden');
-        document.getElementById('logoutBtn').classList.remove('hidden');
+        document.getElementById('hero')?.classList.add('hidden');
+        document.getElementById('dashboard')?.classList.remove('hidden');
+        document.getElementById('loginBtn')?.classList.add('hidden');
+        document.getElementById('logoutBtn')?.classList.remove('hidden');
     }
 
     showHero() {
-        document.getElementById('hero').classList.remove('hidden');
-        document.getElementById('dashboard').classList.add('hidden');
-        document.getElementById('loginBtn').classList.remove('hidden');
-        document.getElementById('logoutBtn').classList.add('hidden');
+        document.getElementById('hero')?.classList.remove('hidden');
+        document.getElementById('dashboard')?.classList.add('hidden');
+        document.getElementById('loginBtn')?.classList.remove('hidden');
+        document.getElementById('logoutBtn')?.classList.add('hidden');
     }
 
     showLoading() {
-        document.getElementById('loadingSpinner').classList.remove('hidden');
+        document.getElementById('loadingSpinner')?.classList.remove('hidden');
     }
 
     hideLoading() {
-        document.getElementById('loadingSpinner').classList.add('hidden');
+        document.getElementById('loadingSpinner')?.classList.add('hidden');
     }
 
     async loadAllData() {
+        if (!this.accessToken) return;
+
         this.showLoading();
         try {
             await Promise.all([
@@ -88,7 +91,6 @@ class SpotifyWrapped {
     }
 
     async apiRequest(endpoint) {
-        // Tambahkan access_token ke query string jika endpoint membutuhkan
         let url = `${API_BASE_URL}${endpoint}`;
         const needsToken = [
             '/spotify/top-tracks',
@@ -98,7 +100,6 @@ class SpotifyWrapped {
         ];
         for (const path of needsToken) {
             if (endpoint.startsWith(path)) {
-                // Pisahkan path dan query
                 let [base, queryString] = endpoint.split('?');
                 let params = new URLSearchParams(queryString || '');
                 params.set('access_token', this.accessToken);
@@ -126,9 +127,7 @@ class SpotifyWrapped {
         try {
             const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ refresh_token: this.refreshToken })
             });
 
@@ -148,15 +147,9 @@ class SpotifyWrapped {
     async loadTopTracks() {
         try {
             let tracks = await this.apiRequest('/spotify/top-tracks');
-            if (Array.isArray(tracks)) {
-                // ok
-            } else if (tracks && Array.isArray(tracks.items)) {
-                tracks = tracks.items;
-            } else {
-                tracks = [];
-            }
-            this.trackData = tracks;
-            this.renderTopTracks(tracks);
+            if (!Array.isArray(tracks) && tracks?.items) tracks = tracks.items;
+            this.trackData = tracks || [];
+            this.renderTopTracks(this.trackData);
         } catch (error) {
             console.error('Error loading top tracks:', error);
         }
@@ -165,15 +158,9 @@ class SpotifyWrapped {
     async loadTopArtists() {
         try {
             let artists = await this.apiRequest('/spotify/top-artists');
-            if (Array.isArray(artists)) {
-                // ok
-            } else if (artists && Array.isArray(artists.items)) {
-                artists = artists.items;
-            } else {
-                artists = [];
-            }
-            this.artistData = artists;
-            this.renderTopArtists(artists);
+            if (!Array.isArray(artists) && artists?.items) artists = artists.items;
+            this.artistData = artists || [];
+            this.renderTopArtists(this.artistData);
         } catch (error) {
             console.error('Error loading top artists:', error);
         }
@@ -182,26 +169,21 @@ class SpotifyWrapped {
     async loadTopGenres() {
         try {
             const genres = await this.apiRequest('/spotify/top-genres');
-            this.genreData = genres;
-            this.renderTopGenres(genres);
-            this.renderPieChart(genres);
+            this.genreData = genres || [];
+            this.renderTopGenres(this.genreData);
+            this.renderPieChart('genre');
         } catch (error) {
             console.error('Error loading top genres:', error);
         }
     }
+
     renderPieChart(type = 'genre') {
-        let labels = [];
-        let data = [];
-        let backgroundColors = [];
-        let title = '';
+        let labels = [], data = [], title = '';
         if (type === 'genre') {
             const genreCount = {};
             this.genreData.forEach(g => {
-                if (typeof g === 'string') {
-                    genreCount[g] = (genreCount[g] || 0) + 1;
-                } else if (g.genre && g.count) {
-                    genreCount[g.genre] = g.count;
-                }
+                if (typeof g === 'string') genreCount[g] = (genreCount[g] || 0) + 1;
+                else if (g.genre && g.count) genreCount[g.genre] = g.count;
             });
             labels = Object.keys(genreCount);
             data = Object.values(genreCount);
@@ -215,7 +197,6 @@ class SpotifyWrapped {
             data = this.trackData.map(t => t.popularity || 1);
             title = 'Your Top Tracks (by Popularity)';
         } else if (type === 'all') {
-            // Gabungkan genre, artist, track
             labels = [
                 ...this.genreData.slice(0, 5).map(g => (typeof g === 'string' ? g : g.genre)),
                 ...this.artistData.slice(0, 3).map(a => a.name),
@@ -228,35 +209,24 @@ class SpotifyWrapped {
             ];
             title = 'Your Wrapped: Genre, Artist, Track';
         }
-        backgroundColors = labels.map(() => `hsl(${Math.random()*360},70%,60%)`);
-        if (this.mainPieChart) {
-            this.mainPieChart.destroy();
-        }
-        const ctx = document.getElementById('mainPieChart').getContext('2d');
+        const backgroundColors = labels.map(() => `hsl(${Math.random()*360},70%,60%)`);
+        if (this.mainPieChart) this.mainPieChart.destroy();
+        const ctx = document.getElementById('mainPieChart')?.getContext('2d');
+        if (!ctx) return;
         this.mainPieChart = new Chart(ctx, {
             type: 'pie',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: data,
-                    backgroundColor: backgroundColors,
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'bottom', labels: { color: '#fff' } },
-                }
-            }
+            data: { labels, datasets: [{ data, backgroundColor: backgroundColors }] },
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#fff' } } } }
         });
         document.getElementById('pieChartTitle').textContent = title;
     }
 
     showPieChart() {
-        document.getElementById('pieChartSection').classList.remove('hidden');
+        document.getElementById('pieChartSection')?.classList.remove('hidden');
     }
+
     hidePieChart() {
-        document.getElementById('pieChartSection').classList.add('hidden');
+        document.getElementById('pieChartSection')?.classList.add('hidden');
     }
 
     async loadWrappedData() {
@@ -301,12 +271,9 @@ class SpotifyWrapped {
             const artistElement = document.createElement('div');
             artistElement.className = 'artist-card fade-in';
             artistElement.style.animationDelay = `${index * 0.1}s`;
-            let img = '';
-            if (artist.images && artist.images.length > 0 && artist.images[0].url) {
-                img = `<img src="${artist.images[0].url}" alt="${artist.name}" class="artist-image" loading="lazy">`;
-            } else {
-                img = `<div class="artist-image"></div>`;
-            }
+            let img = artist.images?.[0]?.url
+                ? `<img src="${artist.images[0].url}" alt="${artist.name}" class="artist-image" loading="lazy">`
+                : `<div class="artist-image"></div>`;
             artistElement.innerHTML = `
                 ${img}
                 <div class="artist-name font-bold">${artist.name || '-'}</div>
@@ -341,55 +308,30 @@ class SpotifyWrapped {
     renderWrappedSummary(data) {
         const container = document.getElementById('wrappedSummary');
         container.innerHTML = '';
-
         const summaryCards = [
-            {
-                title: 'Total Listening Time',
-                value: this.formatListeningTime(data.total_listening_time),
-                icon: '🎵'
-            },
-            {
-                title: 'Top Genre',
-                value: data.top_genre || 'Not available',
-                icon: '🎸'
-            },
-            {
-                title: 'Favorite Artist',
-                value: data.top_artist || 'Not available',
-                icon: '🎤'
-            },
-            {
-                title: 'Most Played Track',
-                value: data.top_track || 'Not available',
-                icon: '🎶'
-            }
+            { title: 'Total Listening Time', value: this.formatListeningTime(data.total_listening_time), icon: '🎵' },
+            { title: 'Top Genre', value: data.top_genre || 'Not available', icon: '🎸' },
+            { title: 'Favorite Artist', value: data.top_artist || 'Not available', icon: '🎤' },
+            { title: 'Most Played Track', value: data.top_track || 'Not available', icon: '🎶' }
         ];
-
         summaryCards.forEach((card, index) => {
             const cardElement = document.createElement('div');
             cardElement.className = 'bg-gray-700 rounded-lg p-6 text-center fade-in';
             cardElement.style.animationDelay = `${index * 0.1}s`;
-            
             cardElement.innerHTML = `
                 <div class="text-4xl mb-2">${card.icon}</div>
                 <h4 class="text-lg font-semibold mb-2">${card.title}</h4>
                 <p class="text-2xl font-bold text-green-400">${card.value}</p>
             `;
-            
             container.appendChild(cardElement);
         });
     }
 
     formatListeningTime(minutes) {
         if (!minutes) return '0 minutes';
-        
-        if (minutes < 60) {
-            return `${Math.round(minutes)} minutes`;
-        } else if (minutes < 1440) {
-            return `${Math.round(minutes / 60)} hours`;
-        } else {
-            return `${Math.round(minutes / 1440)} days`;
-        }
+        if (minutes < 60) return `${Math.round(minutes)} minutes`;
+        if (minutes < 1440) return `${Math.round(minutes / 60)} hours`;
+        return `${Math.round(minutes / 1440)} days`;
     }
 
     handleError(error) {
@@ -403,7 +345,6 @@ function handleOAuthCallback() {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
     const refresh = urlParams.get('refresh');
-    
     if (token && refresh) {
         localStorage.setItem('accessToken', token);
         localStorage.setItem('refreshToken', refresh);
@@ -421,7 +362,6 @@ document.addEventListener('DOMContentLoaded', () => {
             app.showPieChart();
             app.renderPieChart(e.target.value);
         });
-        // Default: genre
         app.showPieChart();
         app.renderPieChart('genre');
     }
