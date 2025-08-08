@@ -1,84 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Spotify Wrapped</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&family=IBM+Plex+Mono:wght@700&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        body, h1, h2, h3, h4, h5, h6, .retro-font {
-            font-family: 'VT323', 'Press Start 2P', monospace !important;
-            letter-spacing: 1px;
-        }
-        .retro-bg {
-            background: repeating-linear-gradient(135deg, #222 0 20px, #333 20px 40px);
-        }
-        .retro-border {
-            border: 3px solid #ffb347;
-            box-shadow: 0 0 0 4px #222, 0 0 16px 2px #ffb347;
-        }
-        .retro-btn {
-            font-family: 'Press Start 2P', monospace;
-            background: #ffb347;
-            color: #222;
-            border: 2px solid #222;
-            box-shadow: 2px 2px 0 #222;
-            text-shadow: 1px 1px 0 #fff;
-        }
-        .retro-btn:hover {
-            background: #ffcc80;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="retro-bg text-white min-h-screen">
+<body class="min-h-screen">
     <!-- Navigation -->
-    <nav class="bg-black p-4 retro-border">
+    <nav class="retro-header p-4">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-yellow-400 retro-font">Spotify Wrapped</h1>
-            <button id="loginBtn" class="retro-btn px-6 py-2 rounded-full font-semibold">
-                Login with Spotify
-            </button>
-            <button id="logoutBtn" class="retro-btn px-6 py-2 rounded-full font-semibold hidden">
-                Logout
-            </button>
+            <h1 class="retro-title font-bold">Spotify Wrapped</h1>
+            <div>
+                <button id="loginBtn" class="retro-btn font-semibold">Login with Spotify</button>
+                <button id="logoutBtn" class="retro-btn font-semibold hidden">Logout</button>
+            </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="hero" class="flex items-center justify-center h-96 bg-gradient-to-b from-yellow-200 via-pink-200 to-blue-200 retro-border">
+    <section id="hero" class="flex items-center justify-center h-96">
         <div class="text-center">
-            <h2 class="text-5xl font-bold mb-4 retro-font text-yellow-500 drop-shadow">Your Spotify Wrapped</h2>
-            <p class="text-xl text-yellow-900 mb-8 retro-font">Discover your top tracks, artists, and genres</p>
-            <button id="getStartedBtn" class="retro-btn px-8 py-3 rounded-full text-lg font-semibold">
-                Get Started
-            </button>
+            <h2 class="retro-title mb-4">Discover Your Spotify Wrapped</h2>
+            <p class="text-xl mb-8 retro-font">
+                Login with Spotify to see your top tracks, artists, and genres.<br />
+                Get your personalized wrapped summary and share with friends!
+            </p>
+            <button id="getStartedBtn" class="retro-btn text-lg font-semibold">Login with Spotify</button>
         </div>
     </section>
 
     <!-- Dashboard -->
-    <section id="dashboard" class="container mx-auto px-4 py-8 hidden">
+    <section id="dashboard" class="container mx-auto px-2 py-8 hidden">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Top Tracks Card -->
-            <div class="bg-gray-800 rounded-lg p-6">
-                <h3 class="text-2xl font-bold mb-4 text-green-500">Top Tracks</h3>
+            <div class="retro-card p-6 retro-shadow">
+                <h3 class="text-2xl font-bold mb-4 retro-label">Top Tracks</h3>
                 <div id="topTracks" class="space-y-3">
                     <p class="text-gray-400">Loading...</p>
                 </div>
             </div>
-
             <!-- Top Artists Card -->
-            <div class="bg-gray-800 rounded-lg p-6">
-                <h3 class="text-2xl font-bold mb-4 text-green-500">Top Artists</h3>
+            <div class="retro-card p-6 retro-shadow">
+                <h3 class="text-2xl font-bold mb-4 retro-label">Top Artists</h3>
                 <div id="topArtists" class="space-y-3">
                     <p class="text-gray-400">Loading...</p>
                 </div>
             </div>
-
             <!-- Top Genres Card -->
-            <div class="bg-gray-800 rounded-lg p-6">
-                <h3 class="text-2xl font-bold mb-4 text-green-500">Top Genres</h3>
+            <div class="retro-card p-6 retro-shadow">
+                <h3 class="text-2xl font-bold mb-4 retro-label">Top Genres</h3>
                 <div id="topGenres" class="space-y-3">
                     <p class="text-gray-400">Loading...</p>
                 </div>
@@ -86,10 +59,9 @@
         </div>
 
         <!-- Wrapped Visualization Controls -->
-        <!-- Pie Chart Genre Only -->
         <div class="mt-8 flex flex-col md:flex-row items-center gap-4">
             <div class="flex gap-2 items-center">
-                <label for="chartTypeSelect" class="retro-font text-yellow-300">Chart:</label>
+                <label for="chartTypeSelect" class="retro-label">Chart:</label>
                 <select id="chartTypeSelect" class="retro-btn px-4 py-2 rounded">
                     <option value="genre">Genre</option>
                     <option value="artist">Artist</option>
@@ -100,9 +72,9 @@
         </div>
 
         <!-- Wrapped Pie Chart -->
-        <div id="pieChartSection" class="mt-8 bg-gray-800 rounded-lg p-6 retro-border flex flex-col items-center">
-            <h3 id="pieChartTitle" class="text-3xl font-bold mb-6 text-center text-yellow-400 retro-font">Your Genre Distribution</h3>
-            <canvas id="mainPieChart" width="260" height="260" style="max-width:260px;max-height:260px;"></canvas>
+        <div id="pieChartSection" class="mt-8 retro-card p-6 retro-shadow flex flex-col items-center">
+            <h3 id="pieChartTitle" class="text-3xl font-bold mb-6 text-center retro-label">Your Genre Distribution</h3>
+            <canvas id="mainPieChart" width="220" height="220" style="max-width:220px;max-height:220px;"></canvas>
         </div>
 
         <!-- Wrapped Summary -->

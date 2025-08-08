@@ -1,100 +1,237 @@
-/* Custom styles */
+/* Retro style for SpotifyWrapped */
+
+/* Reset conflicting styles */
 body {
-    font-family: 'VT323', 'Press Start 2P', monospace, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: repeating-linear-gradient(135deg, #222 0 20px, #333 20px 40px);
+    font-family: 'IBM Plex Mono', 'Fira Mono', monospace !important;
+    background: radial-gradient(ellipse at 60% 40%, #f7e7d3 60%, #e2c9b0 100%);
+    color: #23201e;
+    margin: 0;
+    padding: 0;
+    letter-spacing: 1px;
+    min-height: 100vh;
 }
 
-/* Spotify-like animations */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+/* Header */
+.retro-header {
+    background: #23201e;
+    border-bottom: 4px solid #bfa07a;
+    box-shadow: 0 4px 24px 0 #bfa07a33;
+    padding: 1rem 0;
 }
 
-.fade-in {
-    animation: fadeIn 0.5s ease-in-out;
+.retro-header .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Track item styles */
-.track-item {
+.retro-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #bfa07a;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+/* Buttons */
+.retro-btn, select.retro-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    background: #bfa07a;
+    color: #23201e;
+    border: 2px solid #23201e;
+    border-radius: 12px;
+    box-shadow: 2px 2px 0 #23201e;
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 12px 28px;
+    margin: 0 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.retro-btn:hover, select.retro-btn:focus {
+    background: #e2c9b0;
+    outline: none;
+}
+
+/* Hero Section */
+#hero {
     display: flex;
     align-items: center;
-    padding: 8px;
-    border-radius: 8px;
-    transition: background-color 0.2s;
-}
-
-.track-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.track-number {
-    color: #b3b3b3;
-    font-size: 16px;
-    margin-right: 16px;
-    width: 20px;
-}
-
-.track-info {
-    flex: 1;
-}
-
-.track-name {
-    color: white;
-    font-weight: 500;
-}
-
-.track-artist {
-    color: #b3b3b3;
-    font-size: 14px;
-}
-
-/* Artist card styles */
-.artist-card {
+    justify-content: center;
+    height: 24rem; /* 96 */
     text-align: center;
-    padding: 16px;
-    border-radius: 8px;
-    transition: transform 0.2s;
+    padding: 0 1rem;
 }
 
-.artist-card:hover {
-    transform: scale(1.05);
+#hero h2.retro-title {
+    margin-bottom: 1rem;
+    color: #23201e;
 }
 
-.artist-image {
-    width: 72px;
-    height: 72px;
-    border-radius: 12px;
-    margin: 0 auto 12px;
-    background: #ffb347;
-    border: 3px solid #222;
-    box-shadow: 0 0 0 4px #ffb347, 0 0 8px 2px #222;
-    image-rendering: pixelated;
-    object-fit: cover;
+#hero p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    color: #23201e;
+    max-width: 600px;
+    line-height: 1.5;
 }
 
-/* Genre pill styles */
-.genre-pill {
-    display: inline-block;
-    background-color: #ffb347;
-    color: #222;
-    padding: 6px 14px;
-    border-radius: 12px;
-    margin: 4px;
-    font-size: 13px;
-    font-family: 'Press Start 2P', monospace;
+/* Cards */
+.retro-card {
+    background: #fff7ed;
+    border: 2.5px solid #bfa07a;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px 0 #bfa07a33;
+    padding: 1.5rem;
+    color: #23201e;
+}
+
+.retro-shadow {
+    box-shadow: 0 8px 32px 0 #bfa07a55;
+}
+
+.retro-label {
+    color: #bfa07a;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* Text */
+.text-green-500 {
+    color: #3a6b35;
+}
+
+.text-gray-400 {
+    color: #7a6f5a;
+}
+
+/* Responsive Grid */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.grid-cols-1 {
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .md\:grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .lg\:grid-cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Pie Chart Section */
+#pieChartSection {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: #fff7ed;
+    border: 2.5px solid #bfa07a;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px 0 #bfa07a33;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#pieChartTitle {
+    font-size: 2rem;
     font-weight: 700;
-    border: 2px solid #222;
-    box-shadow: 1px 1px 0 #222;
+    color: #bfa07a;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Wrapped Summary */
+#wrappedSummary {
+    margin-top: 2rem;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    #wrappedSummary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Loading Spinner */
+#loadingSpinner {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(35, 32, 30, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.animate-spin {
+    border-top-color: #bfa07a;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
-    .track-item {
-        flex-direction: column;
-        align-items: flex-start;
+@media (max-width: 900px) {
+    .retro-title {
+        font-size: 2rem;
     }
-    
-    .track-number {
-        margin-bottom: 8px;
+    #hero {
+        height: auto;
+        padding: 2rem 1rem;
     }
+    #hero p {
+        font-size: 1rem;
+        max-width: 100%;
+    }
+    .retro-btn, select.retro-btn {
+        font-size: 1rem;
+        padding: 10px 20px;
+        margin: 0 4px;
+    }
+    .retro-card {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+    #pieChartSection {
+        width: 100%;
+        max-width: 280px;
+        padding: 1rem;
+    }
+    #mainPieChart {
+        width: 180px !important;
+        height: 180px !important;
+        max-width: 180px !important;
+        max-height: 180px !important;
+    }
+    #pieChartSection h3 {
+        font-size: 1.2rem;
+    }
+    #wrappedSummary {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Additional utility classes */
+.text-center {
+    text-align: center;
 }
