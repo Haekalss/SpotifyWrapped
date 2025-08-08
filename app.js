@@ -3,6 +3,9 @@
 const API_BASE_URL = 'https://wrappedspotify-production.up.railway.app'; // Adjust this to your backend URL
 
 class SpotifyWrapped {
+    genreData = [];
+    artistData = [];
+    trackData = [];
     constructor() {
         this.accessToken = localStorage.getItem('accessToken');
         this.refreshToken = localStorage.getItem('refreshToken');
@@ -24,6 +27,7 @@ class SpotifyWrapped {
         if (this.accessToken) {
             this.showDashboard();
             this.loadAllData();
+            this.showPieChart(); // langsung tampilkan pie chart setelah login
         }
     }
 
@@ -122,6 +126,7 @@ class SpotifyWrapped {
     async loadTopTracks() {
         try {
             const tracks = await this.apiRequest('/spotify/top-tracks');
+            this.trackData = tracks;
             this.renderTopTracks(tracks);
         } catch (error) {
             console.error('Error loading top tracks:', error);
@@ -131,6 +136,7 @@ class SpotifyWrapped {
     async loadTopArtists() {
         try {
             const artists = await this.apiRequest('/spotify/top-artists');
+            this.artistData = artists;
             this.renderTopArtists(artists);
         } catch (error) {
             console.error('Error loading top artists:', error);
@@ -140,10 +146,81 @@ class SpotifyWrapped {
     async loadTopGenres() {
         try {
             const genres = await this.apiRequest('/spotify/top-genres');
+            this.genreData = genres;
             this.renderTopGenres(genres);
+            this.renderPieChart(genres);
         } catch (error) {
             console.error('Error loading top genres:', error);
         }
+    }
+    renderPieChart(type = 'genre') {
+        let labels = [];
+        let data = [];
+        let backgroundColors = [];
+        let title = '';
+        if (type === 'genre') {
+            const genreCount = {};
+            this.genreData.forEach(g => {
+                if (typeof g === 'string') {
+                    genreCount[g] = (genreCount[g] || 0) + 1;
+                } else if (g.genre && g.count) {
+                    genreCount[g.genre] = g.count;
+                }
+            });
+            labels = Object.keys(genreCount);
+            data = Object.values(genreCount);
+            title = 'Your Genre Distribution';
+        } else if (type === 'artist') {
+            labels = this.artistData.map(a => a.name);
+            data = this.artistData.map(a => a.popularity || 1);
+            title = 'Your Top Artists (by Popularity)';
+        } else if (type === 'track') {
+            labels = this.trackData.map(t => t.name);
+            data = this.trackData.map(t => t.popularity || 1);
+            title = 'Your Top Tracks (by Popularity)';
+        } else if (type === 'all') {
+            // Gabungkan genre, artist, track
+            labels = [
+                ...this.genreData.slice(0, 5).map(g => (typeof g === 'string' ? g : g.genre)),
+                ...this.artistData.slice(0, 3).map(a => a.name),
+                ...this.trackData.slice(0, 3).map(t => t.name)
+            ];
+            data = [
+                ...this.genreData.slice(0, 5).map(g => (typeof g === 'string' ? 1 : g.count)),
+                ...this.artistData.slice(0, 3).map(a => a.popularity || 1),
+                ...this.trackData.slice(0, 3).map(t => t.popularity || 1)
+            ];
+            title = 'Your Wrapped: Genre, Artist, Track';
+        }
+        backgroundColors = labels.map(() => `hsl(${Math.random()*360},70%,60%)`);
+        if (this.mainPieChart) {
+            this.mainPieChart.destroy();
+        }
+        const ctx = document.getElementById('mainPieChart').getContext('2d');
+        this.mainPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: backgroundColors,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#fff' } },
+                }
+            }
+        });
+        document.getElementById('pieChartTitle').textContent = title;
+    }
+
+    showPieChart() {
+        document.getElementById('pieChartSection').classList.remove('hidden');
+    }
+    hidePieChart() {
+        document.getElementById('pieChartSection').classList.add('hidden');
     }
 
     async loadWrappedData() {
@@ -285,5 +362,25 @@ function handleOAuthCallback() {
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
     handleOAuthCallback();
-    new SpotifyWrapped();
+    const app = new SpotifyWrapped();
+    document.getElementById('pieChartGenreBtn').addEventListener('click', () => {
+        app.showPieChart();
+        app.renderPieChart('genre');
+    });
+    document.getElementById('pieChartArtistBtn').addEventListener('click', () => {
+        app.showPieChart();
+        app.renderPieChart('artist');
+    });
+    document.getElementById('pieChartTrackBtn').addEventListener('click', () => {
+        app.showPieChart();
+        app.renderPieChart('track');
+    });
+    document.getElementById('pieChartAllBtn').addEventListener('click', () => {
+        app.showPieChart();
+        app.renderPieChart('all');
+    });
+    document.getElementById('receiptBtn').addEventListener('click', () => {
+        app.hidePieChart();
+        // Nanti bisa tambahkan showReceipt() di sini
+    });
 });
