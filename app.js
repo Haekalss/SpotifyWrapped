@@ -143,7 +143,13 @@ class SpotifyWrapped {
     async loadTopTracks() {
         try {
             let tracks = await this.apiRequest('/spotify/top-tracks');
-            if (!Array.isArray(tracks) && tracks.items) tracks = tracks.items;
+            if (Array.isArray(tracks)) {
+                // ok
+            } else if (tracks && Array.isArray(tracks.items)) {
+                tracks = tracks.items;
+            } else {
+                tracks = [];
+            }
             this.trackData = tracks;
             this.renderTopTracks(tracks);
         } catch (error) {
@@ -154,7 +160,13 @@ class SpotifyWrapped {
     async loadTopArtists() {
         try {
             let artists = await this.apiRequest('/spotify/top-artists');
-            if (!Array.isArray(artists) && artists.items) artists = artists.items;
+            if (Array.isArray(artists)) {
+                // ok
+            } else if (artists && Array.isArray(artists.items)) {
+                artists = artists.items;
+            } else {
+                artists = [];
+            }
             this.artistData = artists;
             this.renderTopArtists(artists);
         } catch (error) {
