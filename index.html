@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Wrapped</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-black p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-green-500">Spotify Wrapped</h1>
+            <button id="loginBtn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full font-semibold">
+                Login with Spotify
+            </button>
+            <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full font-semibold hidden">
+                Logout
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="flex items-center justify-center h-96 bg-gradient-to-b from-gray-900 to-black">
+        <div class="text-center">
+            <h2 class="text-5xl font-bold mb-4">Your Spotify Wrapped</h2>
+            <p class="text-xl text-gray-300 mb-8">Discover your top tracks, artists, and genres</p>
+            <button id="getStartedBtn" class="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full text-lg font-semibold">
+                Get Started
+            </button>
+        </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboard" class="container mx-auto px-4 py-8 hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Top Tracks Card -->
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h3 class="text-2xl font-bold mb-4 text-green-500">Top Tracks</h3>
+                <div id="topTracks" class="space-y-3">
+                    <p class="text-gray-400">Loading...</p>
+                </div>
+            </div>
+
+            <!-- Top Artists Card -->
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h3 class="text-2xl font-bold mb-4 text-green-500">Top Artists</h3>
+                <div id="topArtists" class="space-y-3">
+                    <p class="text-gray-400">Loading...</p>
+                </div>
+            </div>
+
+            <!-- Top Genres Card -->
+            <div class="bg-gray-800 rounded-lg p-6">
+                <h3 class="text-2xl font-bold mb-4 text-green-500">Top Genres</h3>
+                <div id="topGenres" class="space-y-3">
+                    <p class="text-gray-400">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wrapped Summary -->
+        <div class="mt-8 bg-gray-800 rounded-lg p-6">
+            <h3 class="text-3xl font-bold mb-6 text-center text-green-500">Your Wrapped Summary</h3>
+            <div id="wrappedSummary" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <p class="text-gray-400">Loading...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center hidden">
+        <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
