@@ -50,18 +50,26 @@ class SpotifyWrapped {
     }
 
     showDashboard() {
-        document.getElementById('hero')?.classList.add('hidden');
-        document.getElementById('dashboard')?.classList.remove('hidden');
-        document.getElementById('loginBtn')?.classList.add('hidden');
-        document.getElementById('logoutBtn')?.classList.remove('hidden');
+        const hero = document.getElementById('hero');
+        const dashboard = document.getElementById('dashboard');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (hero) hero.classList.add('hidden');
+        if (dashboard) dashboard.classList.remove('hidden');
+        if (loginBtn) loginBtn.classList.add('hidden');
+        if (logoutBtn) logoutBtn.classList.remove('hidden');
     }
 
     showHero() {
-        document.getElementById('hero')?.classList.remove('hidden');
-        document.getElementById('dashboard')?.classList.add('hidden');
-        document.getElementById('loginBtn')?.classList.remove('hidden');
-        document.getElementById('logoutBtn')?.classList.add('hidden');
-        this.hideLoading(); // pastikan spinner hilang di hero
+        const hero = document.getElementById('hero');
+        const dashboard = document.getElementById('dashboard');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (hero) hero.classList.remove('hidden');
+        if (dashboard) dashboard.classList.add('hidden');
+        if (loginBtn) loginBtn.classList.remove('hidden');
+        if (logoutBtn) logoutBtn.classList.add('hidden');
+        this.hideLoading();
     }
 
     showLoading() {
@@ -225,7 +233,18 @@ class SpotifyWrapped {
         this.mainPieChart = new Chart(ctx, {
             type: 'pie',
             data: { labels, datasets: [{ data, backgroundColor: backgroundColors }] },
-            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#fff' } } } }
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#23201e', // darker for visibility
+                            font: { family: 'IBM Plex Mono, Fira Mono, monospace', size: 14 }
+                        }
+                    }
+                }
+            }
         });
         document.getElementById('pieChartTitle').textContent = title;
     }
@@ -318,7 +337,6 @@ class SpotifyWrapped {
         const container = document.getElementById('wrappedSummary');
         container.innerHTML = '';
         const summaryCards = [
-            { title: 'Total Listening Time', value: this.formatListeningTime(data.total_listening_time), icon: '🎵' },
             { title: 'Top Genre', value: data.top_genre || 'Not available', icon: '🎸' },
             { title: 'Favorite Artist', value: data.top_artist || 'Not available', icon: '🎤' },
             { title: 'Most Played Track', value: data.top_track || 'Not available', icon: '🎶' }
