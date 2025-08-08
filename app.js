@@ -28,6 +28,11 @@ class SpotifyWrapped {
             this.showDashboard();
             this.loadAllData();
             this.showPieChart(); // langsung tampilkan pie chart setelah login
+        } else {
+            this.showHero();
+            this.hideLoading();
+            // Ensure loading spinner is hidden if no token
+            this.hideLoading();
         }
     }
 
