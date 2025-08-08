@@ -1,6 +1,7 @@
 /* Custom styles */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: 'VT323', 'Press Start 2P', monospace, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: repeating-linear-gradient(135deg, #222 0 20px, #333 20px 40px);
 }
 
 /* Spotify-like animations */
@@ -60,23 +61,30 @@ body {
 }
 
 .artist-image {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
+    width: 72px;
+    height: 72px;
+    border-radius: 12px;
     margin: 0 auto 12px;
-    background: linear-gradient(135deg, #1db954, #1ed760);
+    background: #ffb347;
+    border: 3px solid #222;
+    box-shadow: 0 0 0 4px #ffb347, 0 0 8px 2px #222;
+    image-rendering: pixelated;
+    object-fit: cover;
 }
 
 /* Genre pill styles */
 .genre-pill {
     display: inline-block;
-    background-color: rgba(29, 185, 84, 0.2);
-    color: #1db954;
-    padding: 8px 16px;
-    border-radius: 20px;
+    background-color: #ffb347;
+    color: #222;
+    padding: 6px 14px;
+    border-radius: 12px;
     margin: 4px;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13px;
+    font-family: 'Press Start 2P', monospace;
+    font-weight: 700;
+    border: 2px solid #222;
+    box-shadow: 1px 1px 0 #222;
 }
 
 /* Responsive adjustments */

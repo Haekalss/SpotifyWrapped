@@ -4,29 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spotify Wrapped</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        body, h1, h2, h3, h4, h5, h6, .retro-font {
+            font-family: 'VT323', 'Press Start 2P', monospace !important;
+            letter-spacing: 1px;
+        }
+        .retro-bg {
+            background: repeating-linear-gradient(135deg, #222 0 20px, #333 20px 40px);
+        }
+        .retro-border {
+            border: 3px solid #ffb347;
+            box-shadow: 0 0 0 4px #222, 0 0 16px 2px #ffb347;
+        }
+        .retro-btn {
+            font-family: 'Press Start 2P', monospace;
+            background: #ffb347;
+            color: #222;
+            border: 2px solid #222;
+            box-shadow: 2px 2px 0 #222;
+            text-shadow: 1px 1px 0 #fff;
+        }
+        .retro-btn:hover {
+            background: #ffcc80;
+        }
+    </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen">
+<body class="retro-bg text-white min-h-screen">
     <!-- Navigation -->
-    <nav class="bg-black p-4">
+    <nav class="bg-black p-4 retro-border">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-green-500">Spotify Wrapped</h1>
-            <button id="loginBtn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full font-semibold">
+            <h1 class="text-2xl font-bold text-yellow-400 retro-font">Spotify Wrapped</h1>
+            <button id="loginBtn" class="retro-btn px-6 py-2 rounded-full font-semibold">
                 Login with Spotify
             </button>
-            <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full font-semibold hidden">
+            <button id="logoutBtn" class="retro-btn px-6 py-2 rounded-full font-semibold hidden">
                 Logout
             </button>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="hero" class="flex items-center justify-center h-96 bg-gradient-to-b from-gray-900 to-black">
+    <section id="hero" class="flex items-center justify-center h-96 bg-gradient-to-b from-yellow-200 via-pink-200 to-blue-200 retro-border">
         <div class="text-center">
-            <h2 class="text-5xl font-bold mb-4">Your Spotify Wrapped</h2>
-            <p class="text-xl text-gray-300 mb-8">Discover your top tracks, artists, and genres</p>
-            <button id="getStartedBtn" class="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full text-lg font-semibold">
+            <h2 class="text-5xl font-bold mb-4 retro-font text-yellow-500 drop-shadow">Your Spotify Wrapped</h2>
+            <p class="text-xl text-yellow-900 mb-8 retro-font">Discover your top tracks, artists, and genres</p>
+            <button id="getStartedBtn" class="retro-btn px-8 py-3 rounded-full text-lg font-semibold">
                 Get Started
             </button>
         </div>
@@ -61,20 +86,23 @@
         </div>
 
         <!-- Wrapped Visualization Controls -->
+        <!-- Pie Chart Genre Only -->
         <div class="mt-8 flex flex-col md:flex-row items-center gap-4">
-            <div class="flex gap-2">
-                <button id="pieChartGenreBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold">Pie Chart Genre</button>
-                <button id="pieChartArtistBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold">Pie Chart Artist</button>
-                <button id="pieChartTrackBtn" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded font-semibold">Pie Chart Track</button>
-                <button id="pieChartAllBtn" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded font-semibold">Pie Chart All</button>
-                <button id="receiptBtn" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded font-semibold">Receipt (Coming Soon)</button>
+            <div class="flex gap-2 items-center">
+                <label for="chartTypeSelect" class="retro-font text-yellow-300">Chart:</label>
+                <select id="chartTypeSelect" class="retro-btn px-4 py-2 rounded">
+                    <option value="genre">Genre</option>
+                    <option value="artist">Artist</option>
+                    <option value="track">Track</option>
+                    <option value="all">All</option>
+                </select>
             </div>
         </div>
 
         <!-- Wrapped Pie Chart -->
-        <div id="pieChartSection" class="mt-8 bg-gray-800 rounded-lg p-6">
-            <h3 id="pieChartTitle" class="text-3xl font-bold mb-6 text-center text-green-500">Your Genre Distribution</h3>
-            <canvas id="mainPieChart" width="400" height="400"></canvas>
+        <div id="pieChartSection" class="mt-8 bg-gray-800 rounded-lg p-6 retro-border flex flex-col items-center">
+            <h3 id="pieChartTitle" class="text-3xl font-bold mb-6 text-center text-yellow-400 retro-font">Your Genre Distribution</h3>
+            <canvas id="mainPieChart" width="260" height="260" style="max-width:260px;max-height:260px;"></canvas>
         </div>
 
         <!-- Wrapped Summary -->

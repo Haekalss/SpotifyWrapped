@@ -296,8 +296,14 @@ class SpotifyWrapped {
             const artistElement = document.createElement('div');
             artistElement.className = 'artist-card fade-in';
             artistElement.style.animationDelay = `${index * 0.1}s`;
+            let img = '';
+            if (artist.images && artist.images.length > 0 && artist.images[0].url) {
+                img = `<img src="${artist.images[0].url}" alt="${artist.name}" class="artist-image" loading="lazy">`;
+            } else {
+                img = `<div class="artist-image"></div>`;
+            }
             artistElement.innerHTML = `
-                <div class="artist-image"></div>
+                ${img}
                 <div class="artist-name font-bold">${artist.name || '-'}</div>
                 <div class="text-sm text-gray-400">${artist.genres ? artist.genres.join(', ') : '-'}</div>
             `;
@@ -404,24 +410,14 @@ function handleOAuthCallback() {
 document.addEventListener('DOMContentLoaded', () => {
     handleOAuthCallback();
     const app = new SpotifyWrapped();
-    document.getElementById('pieChartGenreBtn').addEventListener('click', () => {
+    const chartTypeSelect = document.getElementById('chartTypeSelect');
+    if (chartTypeSelect) {
+        chartTypeSelect.addEventListener('change', (e) => {
+            app.showPieChart();
+            app.renderPieChart(e.target.value);
+        });
+        // Default: genre
         app.showPieChart();
         app.renderPieChart('genre');
-    });
-    document.getElementById('pieChartArtistBtn').addEventListener('click', () => {
-        app.showPieChart();
-        app.renderPieChart('artist');
-    });
-    document.getElementById('pieChartTrackBtn').addEventListener('click', () => {
-        app.showPieChart();
-        app.renderPieChart('track');
-    });
-    document.getElementById('pieChartAllBtn').addEventListener('click', () => {
-        app.showPieChart();
-        app.renderPieChart('all');
-    });
-    document.getElementById('receiptBtn').addEventListener('click', () => {
-        app.hidePieChart();
-        // Nanti bisa tambahkan showReceipt() di sini
-    });
+    }
 });
